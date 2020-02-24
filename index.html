@@ -1,0 +1,150 @@
+<style>
+   div.static {
+  position: static;
+  border: 5px solid #73AD21;
+}
+
+div.static2 {
+  position: static;
+  border: 3px solid blue;
+}
+    
+     td,  th {
+      border: 4px solid #ddd;
+      padding: 10px;
+    }
+    
+   tr:nth-child(even){background-color: #f2f2f2;}
+    
+     tr:hover {background-color: #ddd;}
+    
+     th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4CAF50;
+      color: white;
+    }
+    </style>
+
+
+<script type="text/javascript">
+
+let map = new Map();
+    function Upload() {
+        
+        var fileUpload = document.getElementById("fileUpload");
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var table = document.createElement("table");
+                    table.setAttribute("id", "myTable");
+                    var rows = e.target.result.split("\n");
+                    for (var i = 0; i < rows.length; i++) {
+                        var cells = rows[i].split(",");
+                        if (cells.length > 1) {
+                            var row = table.insertRow(-1);
+                            for (var j = 0; j < cells.length; j++) {
+
+                                if(i==0){
+                                    map.set(j, {val: 0});
+                                }
+                                
+                                var cell = row.insertCell(-1);
+                                cell.innerHTML = cells[j];
+
+                               if(i>0){
+
+                                var thisNumber = parseFloat(cells[j]);
+           // if you didn't get back the value NaN (i.e. not a number), add into result
+         
+
+           if (!isNaN(thisNumber)){
+            map.get(j).val += thisNumber;
+            
+
+             
+           }
+           else{
+            map.get(j).val = NaN;
+           }
+          
+         // end for
+
+                               } 
+
+
+                            }
+                        }
+                    }
+                    var dvCSV = document.getElementById("dvCSV");
+                    dvCSV.innerHTML = "";
+                    dvCSV.appendChild(table);
+                }
+                reader.readAsText(fileUpload.files[0]);
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid CSV file.");
+        }
+
+       Show();
+    }
+
+
+    function Show() {
+
+        var fileUpload = document.getElementById("fileUpload");
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var table = document.createElement("table");
+                    table.setAttribute("id", "myTable1");
+                    var rows = e.target.result.split("\n");
+                  
+                        var cells = rows[0].split(",");
+                        if (cells.length > 1) {
+                            var row = table.insertRow(-1);
+                            for (var j = 0; j < cells.length; j++) {
+ 
+                                var cell = row.insertCell(-1);
+                                if (!isNaN(map.get(j).val)){
+                                cell.innerHTML = " Sum of " + cells[j] + "=>" + map.get(j).val ;   
+                                }
+
+                                else{
+
+                                    cell.innerHTML = cells[j] + " is not a numeric field"  ; 
+                                }  
+                        }
+                    }
+                    var dvCSVs = document.getElementById("dvCSVs");
+                    dvCSVs.innerHTML = "";
+                    dvCSVs.appendChild(table);
+                }
+                reader.readAsText(fileUpload.files[0]);
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid CSV file.");
+        }
+    }
+
+    
+</script>
+
+<div>
+<input type="file" id="fileUpload" />
+<input type="button" id="upload" value="Upload" onclick="Upload()" />
+</div>
+<hr />
+<div id="dvCSV" class="static2" ></div>
+<div id="dvCSVs" class="static">
+
+</div>
